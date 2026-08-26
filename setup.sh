@@ -1,20 +1,25 @@
 #!/bin/bash
 # RETRO MCP KALI – Setup Script
-# Run as root: sudo bash setup.sh
+# Downloads files from GitHub and installs
 
 set -e
 
 INSTALL_DIR="/opt/retro-mcp-kali"
 BIN_DIR="/usr/local/bin"
 LAUNCHER="$BIN_DIR/retro-mcp-kali"
+REPO_RAW="https://raw.githubusercontent.com/alongbarbasumatary/RETRO-MCP-KALI/main"
 
 echo "[*] Installing RETRO MCP KALI..."
 
 # Create installation directory
 mkdir -p "$INSTALL_DIR"
 
-# Copy server files
-cp backend_api.py server.py "$INSTALL_DIR/"
+# Download required files from GitHub
+echo "[*] Downloading files from GitHub..."
+cd "$INSTALL_DIR"
+curl -sSL -o backend_api.py "$REPO_RAW/backend_api.py"
+curl -sSL -o server.py "$REPO_RAW/server.py"
+curl -sSL -o requirements.txt "$REPO_RAW/requirements.txt"
 
 # Install Python dependencies
 echo "[*] Installing Python packages..."
@@ -24,8 +29,6 @@ pip3 install -r requirements.txt
 cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
 # RETRO MCP KALI – Launcher
-# Starts backend API and MCP server together
-
 INSTALL_DIR="/opt/retro-mcp-kali"
 DEFAULT_API_IP="127.0.0.1"
 DEFAULT_API_PORT="5000"
@@ -33,7 +36,6 @@ DEFAULT_MCP_HOST="127.0.0.1"
 DEFAULT_MCP_PORT="8000"
 DEBUG=""
 
-# Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --api-ip)   API_IP="$2"; shift 2 ;;
@@ -56,33 +58,21 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Set defaults if not provided
 API_IP="${API_IP:-$DEFAULT_API_IP}"
 API_PORT="${API_PORT:-$DEFAULT_API_PORT}"
 MCP_HOST="${MCP_HOST:-$DEFAULT_MCP_HOST}"
 MCP_PORT="${MCP_PORT:-$DEFAULT_MCP_PORT}"
 
-# Kill any existing instances (optional)
-# pkill -f "backend_api.py" 2>/dev/null || true
-# pkill -f "server.py" 2>/dev/null || true
-
 echo "[*] Starting RETRO MCP KALI..."
 echo "  Backend API: http://$API_IP:$API_PORT"
 echo "  MCP Server:  http://$MCP_HOST:$MCP_PORT/mcp"
 
-# Start backend API in background
 cd "$INSTALL_DIR"
 python3 backend_api.py --ip "$API_IP" --port "$API_PORT" $DEBUG &
 BACKEND_PID=$!
-
-# Wait a moment for backend to start
 sleep 2
-
-# Start MCP server in foreground (will block until Ctrl+C)
 python3 server.py --api "http://$API_IP:$API_PORT" --host "$MCP_HOST" --port "$MCP_PORT" $DEBUG
 MCP_EXIT=$?
-
-# When MCP exits, kill backend
 kill $BACKEND_PID 2>/dev/null || true
 exit $MCP_EXIT
 EOF
