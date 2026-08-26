@@ -1,6 +1,5 @@
 #!/bin/bash
-# RETRO MCP KALI – Setup Script
-# Downloads files from GitHub and installs
+# RETRO MCP KALI – Setup Script (with virtual environment)
 
 set -e
 
@@ -21,9 +20,15 @@ curl -sSL -o backend_api.py "$REPO_RAW/backend_api.py"
 curl -sSL -o server.py "$REPO_RAW/server.py"
 curl -sSL -o requirements.txt "$REPO_RAW/requirements.txt"
 
-# Install Python dependencies
+# Create virtual environment (if not exists)
+if [ ! -d "venv" ]; then
+    echo "[*] Creating Python virtual environment..."
+    python3 -m venv venv
+fi
+
+# Install Python dependencies inside virtual environment
 echo "[*] Installing Python packages..."
-pip3 install -r requirements.txt
+./venv/bin/pip install -r requirements.txt
 
 # Create the launcher script
 cat > "$LAUNCHER" << 'EOF'
@@ -68,10 +73,11 @@ echo "  Backend API: http://$API_IP:$API_PORT"
 echo "  MCP Server:  http://$MCP_HOST:$MCP_PORT/mcp"
 
 cd "$INSTALL_DIR"
-python3 backend_api.py --ip "$API_IP" --port "$API_PORT" $DEBUG &
+# Use virtual environment's Python
+./venv/bin/python backend_api.py --ip "$API_IP" --port "$API_PORT" $DEBUG &
 BACKEND_PID=$!
 sleep 2
-python3 server.py --api "http://$API_IP:$API_PORT" --host "$MCP_HOST" --port "$MCP_PORT" $DEBUG
+./venv/bin/python server.py --api "http://$API_IP:$API_PORT" --host "$MCP_HOST" --port "$MCP_PORT" $DEBUG
 MCP_EXIT=$?
 kill $BACKEND_PID 2>/dev/null || true
 exit $MCP_EXIT
