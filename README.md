@@ -25,6 +25,26 @@
 
 ---
 
+## 📱 Works with Rikkhahub on Android
+
+**RETRO MCP KALI** is built to work seamlessly with **[Rikkhahub](https://play.google.com/store/apps/details?id=me.rerere.rikkahub)** – a powerful AI chat client for Android that supports MCP servers over Streamable HTTP.
+
+<a href="https://play.google.com/store/apps/details?id=me.rerere.rikkahub">
+  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" width="200">
+</a>
+
+### Connect Rikkhahub to RETRO MCP KALI
+
+1. Open Rikkhahub on your Android device.
+2. Go to **Settings → MCP Servers**.
+3. Add a new server with:
+   - **Transport Type**: Streamable HTTP
+   - **Server URL**: `http://<YOUR_KALI_IP>:8000/mcp`
+   - **Enable**: ON
+4. Save and start chatting with your AI assistant – it now has full Kali Linux access!
+
+---
+
 ## 🧠 Why RETRO MCP KALI?
 
 - ✅ **Complete Tool Access** – All Kali tools exposed as MCP tools.
