@@ -3,7 +3,7 @@
   <b>The Ultimate Unrestricted MCP Server for Kali Linux</b>
 </p>
 <p align="center">
-  <a href="https://github.com/yourusername/RETRO-MCP-KALI/blob/main/LICENSE">
+  <a href="https://github.com/alongbarbasumatary/RETRO-MCP-KALI/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
   </a>
   <img src="https://img.shields.io/badge/Kali-268BEE?logo=kalilinux&logoColor=white" alt="Kali">
@@ -61,4 +61,4 @@
 ### One‑Line Install (Recommended)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/RETRO-MCP-KALI/main/setup.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/alongbarbasumatary/RETRO-MCP-KALI/main/setup.sh | sudo bash
